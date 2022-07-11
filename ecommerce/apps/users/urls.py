@@ -1,14 +1,11 @@
 from django.urls import path
 
-from ecommerce.apps.users.views import (
-    user_detail_view,
-    user_redirect_view,
-    user_update_view,
-)
+from ecommerce.apps.users.api.views import UserViewSet
 
 app_name = "users"
 urlpatterns = [
-    path("~redirect/", view=user_redirect_view, name="redirect"),
-    path("~update/", view=user_update_view, name="update"),
-    path("<str:username>/", view=user_detail_view, name="detail"),
+    path('login', UserViewSet.as_view({'post': 'login'})),
+    path('signup', UserViewSet.as_view({'post': 'signup'})),
+    path('me', UserViewSet.as_view({'get': 'me'})),
+    path('withdraw', UserViewSet.as_view({'delete': 'withdraw'}))
 ]
