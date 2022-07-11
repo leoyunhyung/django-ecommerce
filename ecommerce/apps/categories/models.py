@@ -14,7 +14,7 @@ class CategoryGroup(Model):
 
 
 class Category(Model):
-    category_group = models.ForeignKey('Category', verbose_name=_('카테고리 그룹'), on_delete=models.CASCADE, related_name='categories')
+    category_group = models.ForeignKey('CategoryGroup', verbose_name=_('카테고리 그룹'), on_delete=models.CASCADE, related_name='categories')
     name = models.CharField(_('이름'), max_length=100)
 
     class Meta:
