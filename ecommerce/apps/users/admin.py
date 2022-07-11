@@ -1,34 +1,37 @@
+# Django
 from django.contrib import admin
-from django.contrib.auth import admin as auth_admin
-from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.admin import UserAdmin
 
-from ecommerce.apps.users.forms import UserAdminChangeForm, UserAdminCreationForm
-
-User = get_user_model()
+# Local
+from ecommerce.apps.users.models import User, UserSecession
+from ecommerce.bases.admin import Admin
 
 
 @admin.register(User)
-class UserAdmin(auth_admin.UserAdmin):
+class UserAdmin(Admin, UserAdmin):
+    list_display = ('email', 'name', 'phone', 'auth_token', 'is_staff')
+    search_fields = ('email', 'name', 'phone')
+    list_filter = ()
+    ordering = ('-created',)
 
-    form = UserAdminChangeForm
-    add_form = UserAdminCreationForm
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("name", "email")}),
-        (
-            _("Permissions"),
-            {
-                "fields": (
-                    "is_active",
-                    "is_staff",
-                    "is_superuser",
-                    "groups",
-                    "user_permissions",
-                ),
-            },
-        ),
-        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+        ('User Profile', {'fields': ('id', 'email', 'password', 'auth_token')}),
+        ('Authority', {'fields': ('is_staff',)}),
+        ('Date', {'fields': ('created', 'modified')}),
     )
-    list_display = ["username", "name", "is_superuser"]
-    search_fields = ["name"]
+
+    add_fieldsets = (
+        ('User Profile', {'fields': ('email', 'password1', 'password2')}),
+        ('Authority', {'fields': ('is_staff',)}),
+        ('Date', {'fields': ('created', 'modified',)}),
+    )
+
+    readonly_fields = ('auth_token', "created", "modified")
+
+
+@admin.register(UserSecession)
+class UserSecessionAdmin(Admin):
+    list_display = ('email', 'name', 'phone', 'reason')
+    search_fields = ('email', 'name', 'phone', 'reason')
+    list_filter = ()
+    ordering = ()
