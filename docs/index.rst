@@ -11,6 +11,7 @@ Welcome to ecommerce's documentation!
    :caption: Contents:
 
    howto
+   pycharm/configuration
    users
 
 

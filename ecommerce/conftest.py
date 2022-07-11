@@ -1,7 +1,7 @@
 import pytest
 
-from ecommerce.users.models import User
-from ecommerce.users.tests.factories import UserFactory
+from ecommerce.apps.users.models import User
+from ecommerce.apps.users.tests.factories import UserFactory
 
 
 @pytest.fixture(autouse=True)

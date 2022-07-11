@@ -1,23 +1,52 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views import defaults as default_views
-from django.views.generic import TemplateView
+from rest_framework.authtoken.views import obtain_auth_token
 
-urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
-    path(
-        "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
-    ),
-    # Django Admin, use {% url 'admin:index' %}
-    path(settings.ADMIN_URL, admin.site.urls),
-    # User management
-    path("users/", include("ecommerce.users.urls", namespace="users")),
-    path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+from config.docs import schema_view
+from config.redirects import redirect_admin_view, redirect_swagger_view
 
+admin.site.site_header = ""
+admin.site.site_title = ""
+admin.site.index_title = "관리자 페이지"
+
+urlpatterns = (
+    [
+        path("", redirect_admin_view),
+
+        # Admin
+        path("jet/", include("jet.urls", "jet")),
+        path(settings.ADMIN_URL, admin.site.urls),
+
+        # Allauth
+        path("accounts/", include("allauth.urls")),
+
+        # Advanced Filters
+        path("advanced_filters/", include("advanced_filters.urls")),
+
+        # DRF auth token
+        path("auth-token/", obtain_auth_token),
+
+        # django-health-check
+        path("ht/", include("health_check.urls")),
+    ]
+    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+)
+
+# API URLS
+urlpatterns += [
+    # API base url
+    path("api/", redirect_swagger_view),
+    path("api/", include("config.api_router")),
+
+    # Swagger
+    re_path(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json"),
+    path("docs/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+]
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
