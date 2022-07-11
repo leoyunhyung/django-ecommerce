@@ -12,9 +12,12 @@ class ProductModel(Model):
                                  on_delete=models.CASCADE,
                                  related_name='product_models')
     banner_image = models.ForeignKey('images.Image',
-                                     verbose_name=_('이미지'),
-                                     on_delete=models.CASCADE,
-                                     related_name='product_models')
+                                     verbose_name=_('배너 이미지'),
+                                     on_delete=models.SET_NULL,
+                                     null=True,
+                                     blank=True,
+                                     related_name='product_models'
+                                     )
     name = models.CharField(_('이름'), max_length=100)
     release_price = models.IntegerField(_('출시 가격'))
 
@@ -31,8 +34,6 @@ class ProductModelImage(Model):
                               verbose_name=_('이미지'),
                               on_delete=models.CASCADE,
                               related_name='product_images')
-    code = models.CharField(_('이름'), max_length=100)
-    price = models.IntegerField(_('가격'))
 
     class Meta:
         verbose_name = verbose_name_plural = _('상품 모델 이미지')
@@ -44,6 +45,8 @@ class Product(Model):
                                       on_delete=models.CASCADE,
                                       related_name='products')
     name = models.CharField(_('이름'), max_length=100)
+    code = models.CharField(_('제품 번호'), max_length=100)
+    price = models.IntegerField(_('가격'))
 
     class Meta:
         verbose_name = verbose_name_plural = _('상품')
