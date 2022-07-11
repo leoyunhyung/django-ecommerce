@@ -158,6 +158,19 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "ecommerce.apps.users.apps.UsersConfig",
+    "ecommerce.apps.products.apps.ProductsConfig",
+    "ecommerce.apps.categories.apps.CategoriesConfig",
+    "ecommerce.apps.images.apps.ImagesConfig",
+    "ecommerce.apps.banks.apps.BanksConfig",
+    "ecommerce.apps.carts.apps.CartsConfig",
+    "ecommerce.apps.clicks.apps.ClicksConfig",
+    "ecommerce.apps.coupons.apps.CouponsConfig",
+    "ecommerce.apps.inquiries.apps.InquiriesConfig",
+    "ecommerce.apps.likes.apps.LikesConfig",
+    "ecommerce.apps.options.apps.OptionsConfig",
+    "ecommerce.apps.orders.apps.OrdersConfig",
+    "ecommerce.apps.points.apps.PointsConfig",
+    "ecommerce.apps.reviews.apps.ReviewsConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
