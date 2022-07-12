@@ -21,7 +21,7 @@ class ProductModel(Model):
     name = models.CharField(_('이름'), max_length=100)
     release_price = models.IntegerField(_('출시가'))
     low_price = models.IntegerField(_('최저가'), null=True, blank=True)
-    discount_rate = models.IntegerField(_('할인율'), null=True, blank=True)
+    discount_rate = models.DecimalField(_('할인율'), max_digits=4, decimal_places=1, null=True, blank=True)
     stock = models.TextField(_('재고'), null=True, blank=True)
 
     class Meta:
