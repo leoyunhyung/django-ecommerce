@@ -2,7 +2,8 @@ from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 from django.forms import Textarea
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib import admin
+from django.apps import apps
 from django_admin_relation_links import AdminChangeLinksMixin
 from django_reverse_admin import ReverseModelAdmin
 from import_export import resources
@@ -10,6 +11,12 @@ from import_export.admin import ImportExportModelAdmin
 from inline_actions.admin import InlineActionsModelAdminMixin
 from nested_inline.admin import NestedModelAdmin
 from rangefilter.filter import DateRangeFilter
+
+# 장고 기본 앱 숨기기
+for app_config in apps.get_app_configs():
+    for model in app_config.get_models():
+        if admin.site.is_registered(model):
+            admin.site.unregister(model)
 
 
 def _related_field(model, lookup):
@@ -46,7 +53,6 @@ class RelatedFieldAdminMixin:
 
 
 def extend_fields(fields, front_fields=[], back_fields=[]):
-
     if type(fields) is list:
         return list(front_fields) + fields + list(back_fields)
     elif type(fields) is tuple:
