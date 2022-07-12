@@ -27,6 +27,9 @@ class ProductModel(Model):
     class Meta:
         verbose_name = verbose_name_plural = _('상품 모델')
 
+    def __str__(self):
+        return '%s / %s' % (self.id, self.name)
+
 
 class ProductModelImage(Model):
     product_model = models.ForeignKey('ProductModel',
@@ -47,8 +50,7 @@ class Product(Model):
                                       verbose_name=_('상품 모델'),
                                       on_delete=models.CASCADE,
                                       related_name='products')
-    name = models.CharField(_('이름'), max_length=100)
-    code = models.CharField(_('제품 번호'), max_length=100)
+    code = models.CharField(_('제품 코드'), max_length=100, null=True, blank=True)
     price = models.IntegerField(_('가격'))
 
     class Meta:
