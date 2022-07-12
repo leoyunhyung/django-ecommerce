@@ -19,3 +19,6 @@ class Category(Model):
 
     class Meta:
         verbose_name = verbose_name_plural = _('카테고리')
+
+    def __str__(self):
+        return '%s / %s' % (self.category_group.name, self.name)
