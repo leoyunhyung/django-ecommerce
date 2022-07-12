@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 # Local
-from ecommerce.apps.users.models import User, UserSecession
+from ecommerce.apps.users.models import User, UserSecession, UserAddress
 from ecommerce.bases.admin import Admin
 
 
@@ -35,3 +35,28 @@ class UserSecessionAdmin(Admin):
     search_fields = ('email', 'name', 'phone', 'reason')
     list_filter = ()
     ordering = ()
+
+
+# 기본 배송지 삭제 금지
+@admin.register(UserAddress)
+class UserAddressAdmin(Admin):
+    list_display = ('user', 'name', 'phone', 'total_address', 'main_address', 'sub_address', 'postal_code', 'is_default')
+    search_fields = ('user__email', 'name', 'phone', 'total_address', 'main_address', 'sub_address', 'postal_code', 'is_default')
+    list_filter = ()
+    ordering = ('-created',)
+
+    fieldsets = (
+        ("Fk", {"fields": ('user',)}),
+        ("Main", {"fields": ('name', 'phone', 'main_address', 'sub_address', 'postal_code')}),
+        ("Boolean", {"fields": ('is_default',)}),
+        ("Date", {"fields": ('created', 'modified',)}),
+    )
+
+    add_fieldsets = (
+        ("Fk", {"fields": ('user',)}),
+        ("Main", {"fields": ('name', 'phone', 'main_address', 'sub_address', 'postal_code')}),
+        ("Boolean", {"fields": ('is_default',)}),
+        ("Date", {"fields": ('created', 'modified',)}),
+    )
+
+    readonly_fields = ("created", "modified")
