@@ -56,6 +56,18 @@ class Product(Model):
     class Meta:
         verbose_name = verbose_name_plural = _('상품')
 
+    def update_product_model(self):
+        product = self
+        product_model = product.product_model
+
+        low_price = product.product_model.products.order_by('price').first().price
+        stock = len(product.product_model.products.all())
+        release_price = product_model.release_price
+        discount_price = release_price - low_price
+        discount_rate = discount_price / release_price * 100
+
+        product_model.update(low_price=low_price, discount_rate=discount_rate, stock=stock)
+
 
 class ProductOption(Model):
     product = models.ForeignKey('Product',
