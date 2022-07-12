@@ -15,8 +15,6 @@ class Cart(Model):
                                 verbose_name=_('상품'),
                                 on_delete=models.CASCADE,
                                 related_name='carts')
-
-    quantity = models.IntegerField(_('수량'), default=1)
     is_purchased = models.BooleanField(_('구매'), default=False)
 
     class Meta:

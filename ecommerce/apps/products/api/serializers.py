@@ -15,7 +15,15 @@ class ProductModelRetrieveSerializer(ModelSerializer):
         fields = ('id', 'name', 'release_price', 'low_price', 'discount_rate')
 
 
+class ProductModelOrderSerializer(ModelSerializer):
+    class Meta:
+        model = ProductModel
+        fields = ('id', 'banner_image', 'name')
+
+
 class ProductSerializer(ModelSerializer):
+    product_model = ProductModelOrderSerializer()
+
     class Meta:
         model = Product
         fields = ('id', 'product_model', 'code', 'price', 'size')
