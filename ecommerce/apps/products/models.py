@@ -51,6 +51,7 @@ class Product(Model):
                                       on_delete=models.CASCADE,
                                       related_name='products')
     code = models.CharField(_('제품 코드'), max_length=100, null=True, blank=True)
+    size = models.CharField(_('사이즈'), max_length=100, null=True, blank=True)
     price = models.IntegerField(_('가격'))
 
     class Meta:
