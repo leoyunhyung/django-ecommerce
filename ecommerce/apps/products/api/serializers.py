@@ -1,9 +1,5 @@
-# Django Rest Framework
-from rest_framework import serializers
-
 # Local
-from ecommerce.apps.options.api.serializers import OptionGroupSerializer
-from ecommerce.apps.products.models import ProductModel
+from ecommerce.apps.products.models import ProductModel, Product
 from ecommerce.bases.api.serializers import ModelSerializer
 
 
@@ -17,3 +13,9 @@ class ProductModelRetrieveSerializer(ModelSerializer):
     class Meta:
         model = ProductModel
         fields = ('id', 'name', 'release_price', 'low_price', 'discount_rate')
+
+
+class ProductSerializer(ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('id', 'product_model', 'code', 'price', 'size')
