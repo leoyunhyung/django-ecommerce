@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 # Django Rest Framework
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 # Third Party
@@ -12,11 +13,15 @@ from drf_yasg.utils import swagger_auto_schema
 
 # Local
 from ecommerce.apps.users.api.serializers import UserSerializer, LoginSerializer, SignupSerializer, TokenSerializer, \
-    WithdrawSerializer
-from ecommerce.apps.users.decorators import login_decorator, signup_decorator, me_decorator, withdraw_decorator
-from ecommerce.apps.users.models import User
+    WithdrawSerializer, UserAddressCreateSerializer, UserAddressSerializer
+from ecommerce.apps.users.decorators import login_decorator, signup_decorator, me_decorator, withdraw_decorator, \
+    address_create_decorator
+from ecommerce.apps.users.models import User, UserAddress
+from ecommerce.bases.api import mixins
 from ecommerce.bases.api.viewsets import GenericViewSet
 from ecommerce.utils.api.response import Response
+from ecommerce.utils.decorators import token_list_decorator, token_create_decorator, token_patch_decorator, \
+    token_destroy_decorator
 from ecommerce.utils.exception_handlers import CustomBadRequestError
 
 
@@ -83,3 +88,88 @@ class UserViewSet(GenericViewSet):
             code=204,
             message=_('no content'),
         )
+
+
+class UserAddressViewSet(mixins.CreateModelMixin,
+                         mixins.ListModelMixin,
+                         mixins.UpdateModelMixin,
+                         mixins.DestroyModelMixin,
+                         GenericViewSet):
+    serializers = {
+        'default': UserAddressSerializer,
+        'create': UserAddressCreateSerializer,
+        # 'update': UserAddressUpdateSerializer,
+    }
+    queryset = UserAddress.objects.all().order_by('-created')
+    filter_backends = (DjangoFilterBackend,)
+
+    def get_permissions(self):
+        if self.action in ['list', 'create', 'partial_update', 'destroy']:
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+    @swagger_auto_schema(**token_list_decorator(title='유저 주소지', serializer=UserAddressSerializer))
+    def list(self, request, *args, **kwargs):
+        user = request.user
+        queryset = self.filter_queryset(self.get_queryset()).filter(user=user)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return Response(
+                status=status.HTTP_200_OK,
+                code=200,
+                message=_('ok'),
+                data=serializer.data
+            )
+
+    @swagger_auto_schema(**token_create_decorator(title='유저 주소지'))
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            instance = self.perform_create(serializer)
+            return Response(
+                status=status.HTTP_201_CREATED,
+                code=201,
+                message=_('ok'),
+                data=UserAddressSerializer(instance=instance).data
+            )
+
+    @swagger_auto_schema(**token_patch_decorator(title='유저 주소지'))
+    def partial_update(self, request, *args, **kwargs):
+        partial = True
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+        return Response(
+            status=status.HTTP_200_OK,
+            code=200,
+            message=_('ok'),
+            data=UserAddressSerializer(instance=instance).data
+        )
+
+    @swagger_auto_schema(**token_destroy_decorator(title='유저 주소지'))
+    def destroy(self, request, *args, **kwargs):
+        user = request.user
+        instance = self.get_object()
+
+        if instance.user == user:
+            self.perform_destroy(instance)
+            # 기본 배송지를 삭제했을 때 아래 코드 실행
+            if not UserAddress.objects.filter(is_default=True):
+                # 최근 배송지를 기본 배송지로 설정
+                try:
+                    UserAddress.objects.last().update(is_default=True)
+                # 마지막 남은 배송지를 삭제했을 때 이슈 처리
+                except:
+                    pass
+            return Response(
+                status=status.HTTP_204_NO_CONTENT,
+                code=204,
+                message=_('ok'),
+            )
+        raise PermissionDenied

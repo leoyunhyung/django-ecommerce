@@ -5,10 +5,16 @@ from django.urls import include, path
 from rest_framework_nested import routers
 
 # Local
+from ecommerce.apps.carts.api.views import CartViewSet
 from ecommerce.apps.products.api.views import ProductModelViewSet, ProductViewSet
+from ecommerce.apps.users.api.views import UserAddressViewSet
 
 router = routers.SimpleRouter(trailing_slash=False)
 
+router.register('carts', CartViewSet)
+router.register('user-address', UserAddressViewSet)
+
+# Nested Router
 router.register(r'product-models', ProductModelViewSet, basename='product-models')
 
 products_router = routers.NestedSimpleRouter(router, r'product-models', lookup='product_model')

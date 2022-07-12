@@ -85,13 +85,14 @@ class UserSecession(Model):
 
 
 class UserAddress(Model):
-    user = models.ForeignKey('User', verbose_name=_('유저'), on_delete=models.CASCADE, related_name='user_address')
-    name = models.CharField(_('이름'), max_length=20, null=True, blank=True)
-    phone = CustomPhoneNumberField(_('전화'), max_length=20, null=True, blank=True)
+    user = models.ForeignKey('User', verbose_name=_('유저'), on_delete=models.CASCADE, related_name='address')
+    name = models.CharField(_('이름'), max_length=20)
+    phone = CustomPhoneNumberField(_('전화'), max_length=20)
     total_address = models.CharField(_('주소'), max_length=100)
     main_address = models.CharField(_('메인 주소'), max_length=100)
     sub_address = models.CharField(_('서브 주소'), max_length=100)
     postal_code = models.IntegerField(_('우편 번호'))
+    is_default = models.BooleanField(_('기본 배송지'), default=True)
 
     class Meta:
         verbose_name = verbose_name_plural = _('주소지')

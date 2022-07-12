@@ -35,6 +35,21 @@ def login_decorator(title='', request_body=None):
     )
 
 
+def address_create_decorator(title='', request_body=None):
+    return dict(
+        operation_id=_('주소지 생성'),
+        operation_description=_(
+            '## < 주소지 생성 API 입니다. > \n'
+            '### 1. Try it out \n'
+            '### 2. parameter 입력 \n'
+            '### 3. Execute \n'
+        ),
+        request_body=request_body,
+        responses={201: openapi.Response(_('ok'))},
+        tags=[_(f'{title}')]
+    )
+
+
 def me_decorator(title='', serializer=None):
     return dict(
         operation_id=_('마이페이지'),
