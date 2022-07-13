@@ -3,19 +3,20 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 # Local
+from ecommerce.apps.users.inlines import PointInline
 from ecommerce.apps.users.models import User, UserSecession, UserAddress
 from ecommerce.bases.admin import Admin
 
 
 @admin.register(User)
 class UserAdmin(Admin, UserAdmin):
-    list_display = ('email', 'name', 'phone', 'auth_token', 'is_staff')
-    search_fields = ('email', 'name', 'phone')
+    list_display = ('email', 'name', 'phone', 'point', 'auth_token', 'is_staff')
+    search_fields = ('email', 'name', 'phone', 'point')
     list_filter = ()
     ordering = ('-created',)
 
     fieldsets = (
-        ('User Profile', {'fields': ('id', 'email', 'password', 'auth_token')}),
+        ('User Profile', {'fields': ('id', 'email', 'password', 'point', 'auth_token')}),
         ('Authority', {'fields': ('is_staff',)}),
         ('Date', {'fields': ('created', 'modified')}),
     )
@@ -27,6 +28,7 @@ class UserAdmin(Admin, UserAdmin):
     )
 
     readonly_fields = ('auth_token', "created", "modified")
+    inlines = (PointInline,)
 
 
 @admin.register(UserSecession)
