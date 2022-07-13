@@ -171,6 +171,7 @@ LOCAL_APPS = [
     "ecommerce.apps.orders.apps.OrdersConfig",
     "ecommerce.apps.points.apps.PointsConfig",
     "ecommerce.apps.reviews.apps.ReviewsConfig",
+    "ecommerce.apps.deliveries.apps.DeliveriesConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

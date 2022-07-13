@@ -6,6 +6,7 @@ from rest_framework_nested import routers
 
 # Local
 from ecommerce.apps.carts.api.views import CartViewSet
+from ecommerce.apps.orders.api.views import OrderGroupViewSet
 from ecommerce.apps.products.api.views import ProductModelViewSet, ProductViewSet
 from ecommerce.apps.users.api.views import UserAddressViewSet
 
@@ -13,6 +14,7 @@ router = routers.SimpleRouter(trailing_slash=False)
 
 router.register('carts', CartViewSet)
 router.register('user-address', UserAddressViewSet)
+router.register('order-groups', OrderGroupViewSet)
 
 # Nested Router
 router.register(r'product-models', ProductModelViewSet, basename='product-models')
