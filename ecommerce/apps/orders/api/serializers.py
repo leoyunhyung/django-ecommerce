@@ -24,7 +24,7 @@ class OrderGroupSerializer(ModelSerializer):
 
     class Meta:
         model = OrderGroup
-        fields = ('id', 'delivery', 'payment_type', 'total_price', 'discount_price', 'is_agreement', 'orders')
+        fields = ('id', 'delivery', 'payment_type', 'total_price', 'discount_price', 'payment_price', 'is_agreement', 'orders')
 
     def get_orders(self, obj):
         return OrderSerializer(instance=obj.orders, read_only=True, many=True).data
@@ -33,7 +33,8 @@ class OrderGroupSerializer(ModelSerializer):
 class OrderGroupCreateSerializer(ModelSerializer):
     product = serializers.IntegerField(required=False)
     cart = serializers.IntegerField(required=False)
+    point = serializers.IntegerField(required=False)
 
     class Meta:
         model = OrderGroup
-        fields = ('product', 'cart', 'payment_type')
+        fields = ('product', 'cart', 'point', 'payment_type')

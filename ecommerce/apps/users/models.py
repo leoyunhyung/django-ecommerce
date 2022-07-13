@@ -80,40 +80,60 @@ class User(AbstractUser, Model):
         self.delete()
 
     def set_order_group(self, cart, product, point, payment_type):
-        order_group = OrderGroup.objects.create(user=self)
-        user_address = self.address.filter(is_default=True).first()
+        try:
+            user_address = self.address.filter(is_default=True).first()
+            delivery = Delivery.objects.create(user_address=user_address,
+                                               name=user_address.name,
+                                               phone=user_address.phone,
+                                               total_address=user_address.total_address,
+                                               main_address=user_address.main_address,
+                                               sub_address=user_address.sub_address,
+                                               postal_code=user_address.postal_code,
+                                               delivery_message=user_address.delivery_message,
+                                               delivery_request=user_address.delivery_request)
+            order_group = OrderGroup.objects.create(user=self, payment_type=payment_type, delivery=delivery)
+            discount_price = point
 
-        delivery = Delivery.objects.create(user_address=user_address,
-                                           name=user_address.name,
-                                           phone=user_address.phone,
-                                           total_address=user_address.total_address,
-                                           main_address=user_address.main_address,
-                                           sub_address=user_address.sub_address,
-                                           postal_code=user_address.postal_code,
-                                           delivery_message=user_address.delivery_message,
-                                           delivery_request=user_address.delivery_request)
+            # 유저 포인트 차감
+            total_point = self.point - discount_price
+            self.update(point=total_point)
 
-        if product:
-            product = Product.objects.get(id=product, is_purchased=False)
-            product_model = ProductModelOrderSerializer(product.product_model).data
-            order = Order.objects.create(product_model=product_model, product=product, order_group=order_group,
-                                         price=product.price, user=self, code=product.code, size=product.size)
-            order_group.update(total_price=order.price, payment_type=payment_type, delivery=delivery)
-            product.update(is_purchased=True)
-            return order_group
+            if product:
+                product = Product.objects.get(id=product, is_purchased=False)
+                product_model = ProductModelOrderSerializer(product.product_model).data
+                order = Order.objects.create(product_model=product_model, product=product, order_group=order_group,
+                                             price=product.price, user=self, code=product.code, size=product.size)
+                total_price = order.price
 
-        if cart:
-            carts = self.carts.filter(id__in=cart, is_purchased=False)
-            for cart in carts:
-                product_model = ProductModelOrderSerializer(cart.product.product_model).data
-                order = Order.objects.create(product_model=product_model, cart=cart, order_group=order_group,
-                                             price=cart.product.price, user=self, code=cart.product.code,
-                                             size=cart.product.size)
-                total_price = order_group.total_price + order.price
-                order_group.update(total_price=total_price, payment_type=payment_type, delivery=delivery)
-                cart.update(is_purchased=True)
-            return order_group
-        raise CustomBadRequestError('bad request')
+                if discount_price > total_price:
+                    raise CustomBadRequestError('bad request')
+
+                payment_price = total_price - discount_price
+
+                order_group.update(total_price=order.price, discount_price=discount_price, payment_price=payment_price)
+                product.update(is_purchased=True)
+                return order_group
+
+            if cart:
+                carts = self.carts.filter(id__in=cart, is_purchased=False)
+                for cart in carts:
+                    product_model = ProductModelOrderSerializer(cart.product.product_model).data
+                    order = Order.objects.create(product_model=product_model, cart=cart, order_group=order_group,
+                                                 price=cart.product.price, user=self, code=cart.product.code,
+                                                 size=cart.product.size)
+                    total_price = order_group.total_price + order.price
+                    order_group.update(total_price=total_price)
+                    cart.update(is_purchased=True)
+
+                if discount_price > order_group.total_price:
+                    raise CustomBadRequestError('bad request')
+
+                payment_price = order_group.total_price - discount_price
+                order_group.update(discount_price=discount_price, payment_price=payment_price)
+                return order_group
+            raise CustomBadRequestError('bad request')
+        except:
+            raise CustomBadRequestError('bad request')
 
 
 class UserSecession(Model):

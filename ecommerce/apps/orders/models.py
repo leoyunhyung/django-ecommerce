@@ -18,8 +18,9 @@ class OrderGroup(Model):
                                     null=True,
                                     blank=True,
                                     related_name='order_groups')
-    total_price = models.IntegerField(_('총 가격'), default=0)
+    total_price = models.IntegerField(_('총 금액'), default=0)
     discount_price = models.IntegerField(_('할인 금액'), default=0)
+    payment_price = models.IntegerField(_('결제 금액'), default=0)
     payment_type = models.CharField(_('결제 방법'), choices=PAYMENT_TYPE_CHOICES, max_length=100)
     is_agreement = models.BooleanField(_('주문 동의'), default=True)
 
