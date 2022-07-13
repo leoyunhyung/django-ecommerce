@@ -26,7 +26,7 @@ class CartViewSet(mixins.ListModelMixin,
         'default': CartSerializer,
         'create': CartCreateSerializer
     }
-    queryset = Cart.objects.all().order_by('-created')
+    queryset = Cart.objects.filter(is_purchased=False).order_by('-created')
     filter_backends = (DjangoFilterBackend,)
 
     def get_permissions(self):

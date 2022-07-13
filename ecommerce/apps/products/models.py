@@ -53,6 +53,7 @@ class Product(Model):
     code = models.CharField(_('제품 코드'), max_length=100, null=True, blank=True)
     size = models.CharField(_('사이즈'), max_length=100, null=True, blank=True)
     price = models.IntegerField(_('가격'))
+    is_purchased = models.BooleanField(_('구매'), default=False)
 
     class Meta:
         verbose_name = verbose_name_plural = _('상품')

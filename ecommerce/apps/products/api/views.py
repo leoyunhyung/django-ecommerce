@@ -67,7 +67,7 @@ class ProductViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return None
-        queryset = Product.objects.filter(product_model=self.kwargs['product_model_pk']).order_by('-created')
+        queryset = Product.objects.filter(is_purchased=False, product_model=self.kwargs['product_model_pk']).order_by('-created')
         return queryset
 
     @swagger_auto_schema(**product_list_decorator(title=_('상품 모델'), serializer=ProductSerializer))

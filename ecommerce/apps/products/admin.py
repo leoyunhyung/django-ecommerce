@@ -31,20 +31,20 @@ class ProductModelAdmin(Admin):
 
 @admin.register(Product)
 class ProductAdmin(Admin):
-    list_display = ('product_model', 'price', 'code')
+    list_display = ('product_model', 'price', 'code', 'is_purchased')
     search_fields = ('product_model__name', 'price', 'code')
     ordering = ('-created',)
     list_filter = ()
 
     fieldsets = (
         ("Fk", {"fields": ('product_model',)}),
-        ("Main", {"fields": ('id', 'price', 'code')}),
+        ("Main", {"fields": ('id', 'price', 'code', 'is_purchased')}),
         ("Date", {"fields": ('created', 'modified',)}),
     )
 
     add_fieldsets = (
         ("Fk", {"fields": ('product_model',)}),
-        ("Main", {"fields": ('price', 'code')}),
+        ("Main", {"fields": ('price', 'code', 'is_purchased')}),
         ("Date", {"fields": ('created', 'modified',)}),
     )
 
