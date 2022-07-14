@@ -326,7 +326,7 @@ MANAGERS = ADMINS
 
 ADMIN_REORDER = (
     # Keep original label and models
-    'users', 'products', 'carts', 'orders', 'banks', 'clicks',
+    'users', 'products', 'carts', 'orders', 'banks', 'clicks', 'likes',
     # # Rename app
     # {'app': 'auth', 'label': 'Authorisation'},
     # # Reorder app models
