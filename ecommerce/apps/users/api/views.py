@@ -14,8 +14,7 @@ from drf_yasg.utils import swagger_auto_schema
 # Local
 from ecommerce.apps.users.api.serializers import UserSerializer, LoginSerializer, SignupSerializer, TokenSerializer, \
     WithdrawSerializer, UserAddressCreateSerializer, UserAddressSerializer
-from ecommerce.apps.users.decorators import login_decorator, signup_decorator, me_decorator, withdraw_decorator, \
-    address_create_decorator
+from ecommerce.apps.users.decorators import login_decorator, signup_decorator, me_decorator, withdraw_decorator
 from ecommerce.apps.users.models import User, UserAddress
 from ecommerce.bases.api import mixins
 from ecommerce.bases.api.viewsets import GenericViewSet
@@ -26,8 +25,8 @@ from ecommerce.utils.exception_handlers import CustomBadRequestError
 
 
 class UserViewSet(GenericViewSet):
-    queryset = User.objects.all()
     filter_backends = (DjangoFilterBackend,)
+    queryset = User.objects.all()
 
     def get_permissions(self):
         if self.action in ['me', 'withdraw']:
@@ -98,7 +97,7 @@ class UserAddressViewSet(mixins.CreateModelMixin,
     serializers = {
         'default': UserAddressSerializer,
         'create': UserAddressCreateSerializer,
-        # 'update': UserAddressUpdateSerializer,
+        'partial_update': UserAddressCreateSerializer,
     }
     queryset = UserAddress.objects.all().order_by('-created')
     filter_backends = (DjangoFilterBackend,)

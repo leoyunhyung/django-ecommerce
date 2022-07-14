@@ -61,12 +61,6 @@ class UserAddressCreateSerializer(ModelSerializer):
         delivery = UserAddress.objects.create(**validated_data)
         return delivery
 
-
-class UserAddressUpdateSerializer(ModelSerializer):
-    class Meta:
-        model = UserAddress
-        fields = ('name', 'phone', 'main_address', 'sub_address', 'postal_code', 'is_default')
-
     def update(self, instance, validated_data):
         user = self.context["request"].user
         if instance.user == user:
