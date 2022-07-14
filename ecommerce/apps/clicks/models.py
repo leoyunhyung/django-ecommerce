@@ -18,3 +18,7 @@ class ProductModelClick(Model):
 
     class Meta:
         verbose_name = verbose_name_plural = _('상품 모델 클릭')
+
+    def update_click_product_model(self):
+        product_model = self.product_model
+        product_model.update(clicks=product_model.product_model_clicks.count())

@@ -11,11 +11,12 @@ from drf_yasg.utils import swagger_auto_schema, no_body
 
 # Local
 from ecommerce.apps.clicks.api.serializers import ProductModelClickSerializer
-from ecommerce.apps.clicks.decorators import product_model_click_create_decorator, product_model_click_list_decorator
+from ecommerce.apps.clicks.decorators import product_model_click_create_decorator
 from ecommerce.apps.clicks.models import ProductModelClick
 from ecommerce.bases.api import mixins
 from ecommerce.bases.api.viewsets import GenericViewSet
 from ecommerce.utils.api.response import Response
+from ecommerce.utils.decorators import token_list_decorator
 
 
 class ProductModelClickCreateViewSet(mixins.CreateModelMixin,
@@ -62,7 +63,7 @@ class ProductModelClickListViewSet(mixins.ListModelMixin,
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
-    @swagger_auto_schema(**product_model_click_list_decorator(title=_('상품 모델'), serializer=ProductModelClickSerializer))
+    @swagger_auto_schema(**token_list_decorator(title=_('클릭'), serializer=ProductModelClickSerializer))
     def list(self, request, *args, **kwargs):
         user = request.user
         queryset = self.filter_queryset(self.get_queryset()).filter(user=user)
