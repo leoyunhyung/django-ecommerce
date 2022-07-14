@@ -24,6 +24,7 @@ class ProductModel(Model):
     discount_rate = models.DecimalField(_('할인율'), max_digits=4, decimal_places=1, null=True, blank=True)
     stocks = models.TextField(_('재고'), null=True, blank=True)
     clicks = models.IntegerField(_('조회수'), default=0)
+    likes = models.IntegerField(_('찜 수'), default=0)
 
     class Meta:
         verbose_name = verbose_name_plural = _('상품 모델')

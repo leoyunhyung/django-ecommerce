@@ -10,8 +10,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 # Local
 from ecommerce.apps.clicks.models import ProductModelClick
 from ecommerce.apps.deliveries.models import Delivery
+from ecommerce.apps.likes.models import ProductModelLike
 from ecommerce.apps.orders.models import OrderGroup, Order
-from ecommerce.apps.products.api.serializers import ProductModelSerializer, ProductModelOrderSerializer
+from ecommerce.apps.products.api.serializers import ProductModelOrderSerializer
 from ecommerce.apps.products.models import Product, ProductModel
 from ecommerce.bases.models import Model
 from ecommerce.modules.choices import DELIVERY_MESSAGE_CHOICES, REASON_CHOICES
@@ -85,6 +86,11 @@ class User(AbstractUser, Model):
         ProductModelClick.objects.filter(user=self, product_model=product_model).delete()
         product_model_click = ProductModelClick.objects.create(user=self, product_model=product_model)
         return product_model_click
+
+    def set_product_model_like(self, product_model_pk):
+        product_model = ProductModel.objects.get(id=product_model_pk)
+        product_model_like, created = ProductModelLike.objects.get_or_create(user=self, product_model=product_model)
+        return product_model_like
 
     def set_order_group(self, cart, product, point, payment_type):
         try:

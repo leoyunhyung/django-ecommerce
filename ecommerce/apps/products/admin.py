@@ -9,7 +9,7 @@ from ecommerce.bases.admin import Admin
 
 @admin.register(ProductModel)
 class ProductModelAdmin(Admin):
-    list_display = ('category', 'banner_image', 'name', 'release_price', 'low_price', 'discount_rate', 'stocks', 'clicks')
+    list_display = ('category', 'banner_image', 'name', 'release_price', 'low_price', 'discount_rate', 'stocks', 'likes', 'clicks')
     search_fields = ('category__category_group__name', 'category__name', 'name', 'release_price', 'low_price', 'discount_rate', 'stocks')
     ordering = ('-created',)
     list_filter = ()

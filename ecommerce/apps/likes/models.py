@@ -18,3 +18,7 @@ class ProductModelLike(Model):
 
     class Meta:
         verbose_name = verbose_name_plural = _('상품 모델 찜')
+
+    def update_like_product_model(self):
+        product_model = self.product_model
+        product_model.update(likes=product_model.product_model_likes.count())
