@@ -22,7 +22,8 @@ class ProductModel(Model):
     release_price = models.IntegerField(_('출시가'))
     low_price = models.IntegerField(_('최저가'), null=True, blank=True)
     discount_rate = models.DecimalField(_('할인율'), max_digits=4, decimal_places=1, null=True, blank=True)
-    stock = models.TextField(_('재고'), null=True, blank=True)
+    stocks = models.TextField(_('재고'), null=True, blank=True)
+    clicks = models.IntegerField(_('조회수'), default=0)
 
     class Meta:
         verbose_name = verbose_name_plural = _('상품 모델')
@@ -63,12 +64,12 @@ class Product(Model):
         product_model = product.product_model
 
         low_price = product.product_model.products.order_by('price').first().price
-        stock = len(product.product_model.products.all())
+        stocks = len(product.product_model.products.all())
         release_price = product_model.release_price
         discount_price = release_price - low_price
         discount_rate = discount_price / release_price * 100
 
-        product_model.update(low_price=low_price, discount_rate=discount_rate, stock=stock)
+        product_model.update(low_price=low_price, discount_rate=discount_rate, stocks=stocks)
 
 
 class ProductOption(Model):

@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='productmodel',
-            name='stock',
+            name='stocks',
             field=models.TextField(blank=True, null=True, verbose_name='재고'),
         ),
     ]

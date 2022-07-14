@@ -5,3 +5,6 @@ from django.utils.translation import gettext_lazy as _
 class ClicksConfig(AppConfig):
     name = "ecommerce.apps.clicks"
     verbose_name = _('클릭')
+
+    def ready(self):
+        import ecommerce.apps.clicks.signals

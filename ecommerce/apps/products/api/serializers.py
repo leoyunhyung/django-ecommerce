@@ -6,7 +6,7 @@ from ecommerce.bases.api.serializers import ModelSerializer
 class ProductModelSerializer(ModelSerializer):
     class Meta:
         model = ProductModel
-        fields = ('id', 'banner_image', 'name', 'release_price', 'low_price', 'discount_rate', 'stock')
+        fields = ('id', 'banner_image', 'name', 'release_price', 'low_price', 'discount_rate', 'stocks')
 
 
 class ProductModelRetrieveSerializer(ModelSerializer):
