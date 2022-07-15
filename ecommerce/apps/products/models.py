@@ -64,8 +64,12 @@ class Product(Model):
         product = self
         product_model = product.product_model
 
-        low_price = product.product_model.products.order_by('price').first().price
-        stocks = len(product.product_model.products.all())
+        try:
+            low_price = product.product_model.products.filter(is_purchased=False).order_by('price').first().price
+        except:
+            low_price = product_model.release_price
+
+        stocks = len(product.product_model.products.filter(is_purchased=False))
         release_price = product_model.release_price
         discount_price = release_price - low_price
         discount_rate = discount_price / release_price * 100
