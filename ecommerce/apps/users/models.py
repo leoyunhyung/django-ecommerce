@@ -123,8 +123,11 @@ class User(AbstractUser, Model):
 
                 payment_price = total_price - discount_price
 
+                # 업데이트 섹션
                 order_group.update(total_price=order.price, discount_price=discount_price, payment_price=payment_price)
                 product.update(is_purchased=True)
+                product.update_product_model()
+
                 return order_group
 
             if cart:
@@ -135,7 +138,11 @@ class User(AbstractUser, Model):
                                                  price=cart.product.price, user=self, code=cart.product.code,
                                                  size=cart.product.size)
                     total_price = order_group.total_price + order.price
+
+                    # 업데이트 섹션
                     order_group.update(total_price=total_price)
+                    cart.product.update(is_purchased=True)
+                    cart.product.update_product_model()
                     cart.update(is_purchased=True)
 
                 if discount_price > order_group.total_price:
